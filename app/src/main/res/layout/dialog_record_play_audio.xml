@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.hardware.AudioRecordModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="@dimen/spacing_half"
+            android:layout_margin="@dimen/spacing_half"
+            android:text="@string/record_audio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:layout_constraintTop_toTopOf="@id/txv_title"
+            app:layout_constraintBottom_toBottomOf="@id/txv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="@dimen/spacing_half"
+            android:padding="@dimen/spacing_half"
+            app:layout_constraintDimensionRatio="1:1"
+            app:srcCompat="@drawable/close"
+            android:onClick="@{(v)->data.onExit(v)}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:layout_constraintTop_toBottomOf="@id/txv_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/audio_record"
+            android:padding="@dimen/spacing_normal"
+            app:showView="@{data.showRecording}"
+            android:id="@+id/img_recording"
+            android:layout_marginVertical="@dimen/spacing_half"
+            app:tint="@color/red_800"
+            android:layout_width="44dp"
+            android:layout_height="44dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toTopOf="@id/img_recording"
+            app:layout_constraintBottom_toBottomOf="@id/img_recording"
+            app:layout_constraintStart_toEndOf="@id/img_recording"
+            android:text="@{data.recordingTime}"
+            android:textSize="@dimen/text_size_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_marginBottom="@dimen/text_size_large"
+            app:layout_constraintTop_toBottomOf="@id/img_recording"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/play"
+            android:layout_marginTop="@dimen/spacing_half"
+            app:showView="@{data.showRecordBtn}"
+            android:onClick="@{(v)->data.onRecord(v)}"
+            android:text="@string/start_record"
+            app:setTextSrc="@{data.recordSrc}"
+            android:id="@+id/record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_marginBottom="@dimen/text_size_large"
+            app:layout_constraintTop_toBottomOf="@id/img_recording"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/record"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="@{(v)->data.onPlay(v)}"
+            app:enableView="@{data.canPlay}"
+            android:layout_marginTop="@dimen/spacing_half"
+            android:text="@string/play_last_record"
+            android:id="@+id/play"
+            app:showView="@{data.showPlayLast}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

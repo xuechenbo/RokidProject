@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.camera.CameraModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".camera.CameraActivity">
+
+        <View
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/top"
+            android:background="@color/color_primary"
+            app:setViewHeight="@{data.topHeight}"
+            android:layout_width="0dp"
+            android:layout_height="24dp"/>
+
+        <View
+            app:layout_constraintTop_toTopOf="@id/preview"
+            app:layout_constraintBottom_toBottomOf="@id/preview"
+            app:layout_constraintStart_toStartOf="@id/preview"
+            app:layout_constraintEnd_toEndOf="@id/preview"
+            android:background="@color/black"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <TextureView
+            android:id="@+id/preview"
+            app:layout_constraintTop_toBottomOf="@id/top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="16:9"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toTopOf="@id/preview"
+            app:layout_constraintStart_toStartOf="@id/preview"
+            app:layout_constraintEnd_toEndOf="@id/preview"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@id/preview"
+            android:textColor="@color/white"
+            app:showView="@{data.showCameraInfo}"
+            android:text="@{data.cameraInfo}"
+            android:background="#5a000000"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <View
+            android:id="@+id/view_controller"
+            app:layout_constraintTop_toBottomOf="@id/preview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="#80000000"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_take"
+            app:layout_constraintTop_toTopOf="@id/view_controller"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/view_controller"
+            app:layout_constraintEnd_toStartOf="@id/btn_record"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintDimensionRatio="1:1"
+            android:layout_marginHorizontal="3dp"
+            android:onClick="@{(v)->data.onCapture(v)}"
+            app:showView="@{data.showCapture}"
+            android:padding="12dp"
+            app:srcCompat="@drawable/pic_take"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_record"
+            app:layout_constraintTop_toTopOf="@id/view_controller"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/view_controller"
+            app:layout_constraintDimensionRatio="1:1"
+            app:showView="@{data.showRecord}"
+            app:setImgSrc="@{data.recordSrc}"
+            android:onClick="@{(v)->data.onRecord(v)}"
+            app:layout_constraintStart_toEndOf="@id/btn_take"
+            android:layout_marginHorizontal="3dp"
+            android:padding="12dp"
+            app:srcCompat="@drawable/movie_record"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_recording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            app:showView="@{data.showRecording}"
+            android:text="@{data.recorded}"
+            android:textColor="@color/white"
+            android:paddingVertical="6dp"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/preview" />
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintTop_toTopOf="@id/preview"
+            android:paddingVertical="6dp"
+            android:textColor="@color/white"
+            android:text="@{data.fps}"
+            app:showView="@{data.showMode}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/txv_recording"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toEndOf="@id/txv_recording"
+            app:showView="@{data.showRecordingPoint}"
+            app:layout_constraintTop_toTopOf="@id/txv_recording"
+            app:srcCompat="@drawable/audio_record"
+            app:tint="@color/red_800"
+            tools:ignore="ImageContrastCheck" />
+
+
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_constraintTop_toBottomOf="@id/view_controller"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/rg_record_mode"
+            android:id="@+id/btn_start_preview"
+            android:text="@string/start_preview"
+            app:enableView="@{data.previewEnabled}"
+            app:setTextSrc="@{data.previewSrc}"
+            android:onClick="@{(v)->data.onPreviewClicked(v)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioGroup
+            app:layout_constraintTop_toTopOf="@id/btn_start_preview"
+            app:layout_constraintBottom_toBottomOf="@id/btn_start_preview"
+            app:layout_constraintStart_toEndOf="@id/btn_start_preview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:showView="@{data.showMode}"
+            android:id="@+id/rg_record_mode"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:text="拍照"
+                android:checked="@={data.isCapture}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:text="录像"
+                android:checked="@={data.isRecord}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RadioGroup>
+
+        <androidx.appcompat.widget.SwitchCompat
+            app:layout_constraintTop_toBottomOf="@id/btn_start_preview"
+            app:layout_constraintStart_toStartOf="parent"
+            android:checked="@={data.isAutoFocus}"
+            app:showView="@{data.showMode}"
+            android:text="@string/auto_focus"
+            android:textOff="@string/off"
+            android:textOn="@string/on"
+            app:switchTextAppearance="@style/switchTextAppearance"
+            app:showText="true"
+            android:id="@+id/sw_auto_focus"
+            android:layout_marginVertical="6dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp" />
+
+<!--        app:showView="@{data.showMode}"-->
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toBottomOf="@id/sw_auto_focus"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            android:padding="@dimen/spacing_half"
+            android:layout_marginStart="@dimen/spacing_half"
+            android:text="@string/ae_mode"
+            app:showView="@{data.showMode}"
+            android:id="@+id/txv_ae"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+<!--        app:showView="@{data.showMode}"-->
+        <androidx.appcompat.widget.AppCompatSeekBar
+            app:layout_constraintStart_toEndOf="@id/txv_ae"
+            app:layout_constraintTop_toTopOf="@id/txv_ae"
+            app:layout_constraintBottom_toBottomOf="@id/txv_ae"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingHorizontal="@dimen/spacing_half"
+            app:showView="@{data.showMode}"
+            android:max="333"
+            android:progress="@={data.ae}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toBottomOf="@id/txv_ae"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="@dimen/spacing_half"
+            app:showView="@{data.showZoom}"
+            android:id="@+id/txv_zoom"
+
+            android:layout_marginStart="@dimen/spacing_half"
+            android:text="@string/zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            app:layout_constraintStart_toEndOf="@id/txv_zoom"
+            app:layout_constraintTop_toTopOf="@id/txv_zoom"
+            app:layout_constraintBottom_toBottomOf="@id/txv_zoom"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingHorizontal="@dimen/spacing_half"
+            app:showView="@{data.showZoom}"
+            android:max="100"
+            android:min="0"
+            android:progress="@={data.zoom}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

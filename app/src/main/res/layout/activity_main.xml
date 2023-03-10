@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.main.MainModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".main.MainActivity">
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btn_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="FaceSDK激活"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <ImageView
+            android:id="@+id/image"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:id="@+id/top"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/color_primary"
+            app:setViewHeight="@{data.topHeight}"
+            android:layout_width="0dp"
+            android:layout_height="21dp"/>
+
+        <View
+            android:id="@+id/action_view"
+            app:layout_constraintTop_toBottomOf="@id/top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/color_primary"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:layout_constraintTop_toTopOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="@id/action_view"
+            app:layout_constraintStart_toStartOf="@id/action_view"
+            android:padding="12dp"
+            app:srcCompat="@drawable/back"
+            android:id="@+id/back"
+            android:onClick="@{(v)->data.onBackPressed(v)}"
+            app:layout_constraintDimensionRatio="1:1"
+            android:tint="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toTopOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="@id/action_view"
+            app:layout_constraintStart_toEndOf="@id/back"
+            android:text="@string/app_name"
+            android:textColor="@color/action_bar_text_color"
+            android:textSize="@dimen/text_size_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txv_is_air_pro_plus"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:checked="@={data.isAirProPlus}"
+            android:paddingHorizontal="@dimen/spacing_half"
+            android:id="@+id/sw_is_air_pro_plus"
+            android:layout_marginTop="84dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintEnd_toStartOf="@id/sw_is_air_pro_plus"
+            app:layout_constraintTop_toTopOf="@id/sw_is_air_pro_plus"
+            app:layout_constraintBottom_toBottomOf="@id/sw_is_air_pro_plus"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingHorizontal="@dimen/spacing_half"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            android:id="@+id/txv_is_air_pro_plus"
+            android:text="@string/is_air_pro_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/please_connect_devices"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+<!--        <Button-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            android:onClick="@{(v)->data.upImage(v)}"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            android:id="@+id/btUpload"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"/>-->
+
+       
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.presentation.PresentationModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.PresentationActivity">
+
+        <View
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/color_primary"
+            android:id="@+id/top"
+            app:setViewHeight="@{data.topHeight}"
+            android:layout_width="0dp"
+            android:layout_height="24dp"/>
+
+        <View
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top"
+            android:background="@color/color_primary"
+            android:id="@+id/action_view"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:layout_constraintTop_toTopOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="@id/action_view"
+            app:layout_constraintStart_toStartOf="@id/action_view"
+            app:layout_constraintDimensionRatio="1:1"
+            android:padding="@dimen/spacing_normal"
+            android:onClick="@{(v)->data.onBackPressed(v)}"
+            app:srcCompat="@drawable/back"
+            app:tint="@color/white"
+            android:id="@+id/back"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintStart_toEndOf="@id/back"
+            app:layout_constraintTop_toTopOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="@id/action_view"
+            android:textSize="@dimen/text_size_big"
+            android:textColor="@color/white"
+            android:text="@string/presentation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_view"
+            android:text="@string/open_presentation"
+            android:onClick="@{(v)->data.onShowPresentation(v)}"
+            app:enableView="@{data.enableShow}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_constraintTop_toBottomOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:onClick="@{(v)->data.onMoin(v)}"
+            android:text="-"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_constraintTop_toBottomOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:onClick="@{(v)->data.onPlus(v)}"
+            android:text="+"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toBottomOf="@id/action_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{data.numberString}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/dismiss_presentation"
+            app:enableView="@{!data.enableShow}"
+            android:onClick="@{(v)->data.onDismissPresentation(v)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

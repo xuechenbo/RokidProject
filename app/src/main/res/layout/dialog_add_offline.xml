@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.voice.OfflineCMD" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="@dimen/spacing_normal"
+            android:id="@+id/title"
+            android:textSize="@dimen/text_size_big"
+            android:textStyle="bold"
+            android:text="@string/add_offline_cmd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:padding="@dimen/spacing_half"
+            android:layout_marginHorizontal="@dimen/spacing_half"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:setTextSrc="@{data.messageSrc}"
+            android:text="@string/add_notice_en"
+            android:id="@+id/message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toBottomOf="@id/message"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="@dimen/spacing_half"
+            android:layout_marginTop="@dimen/spacing_half"
+            android:layout_marginStart="@dimen/spacing_half"
+            android:text="@string/cmd"
+            android:id="@+id/txv_cmd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            app:layout_constraintStart_toEndOf="@id/txv_cmd"
+            app:layout_constraintTop_toTopOf="@id/txv_cmd"
+            app:layout_constraintBottom_toBottomOf="@id/txv_cmd"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/spacing_half"
+            android:text="@={data.inputCMD}"
+            android:layout_marginHorizontal="@dimen/spacing_half"
+            android:background="@drawable/input_bg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintTop_toBottomOf="@id/txv_cmd"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="@dimen/spacing_half"
+            android:layout_marginStart="@dimen/spacing_half"
+            android:layout_marginTop="@dimen/spacing_small_half"
+            android:text="@string/pinyin"
+            android:id="@+id/txv_pinyin"
+            app:showView="@{data.showPinyin}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            app:layout_constraintStart_toEndOf="@id/txv_pinyin"
+            app:layout_constraintTop_toTopOf="@id/txv_pinyin"
+            app:layout_constraintBottom_toBottomOf="@id/txv_pinyin"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/spacing_half"
+            android:text="@={data.inputPinyin}"
+            app:showView="@{data.showPinyin}"
+            android:layout_marginHorizontal="@dimen/spacing_half"
+            android:background="@drawable/input_bg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

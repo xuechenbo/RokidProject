@@ -1,0 +1,20 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        //Rokid maven is required.
+        maven { url 'https://maven.rokid.com/repository/maven-public/'}
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        //Rokid maven is required.
+        maven { url 'https://maven.rokid.com/repository/maven-public/'}
+        mavenCentral()
+    }
+}
+rootProject.name = "RKGlassDemoKotlin"
+include ':app'

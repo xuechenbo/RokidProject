@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.camera.MediaPlayerData" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextureView
+            android:id="@+id/surface"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="16:9"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seek"
+            app:layout_constraintStart_toEndOf="@id/played"
+            app:layout_constraintEnd_toStartOf="@id/duration"
+            app:layout_constraintTop_toBottomOf="@id/surface"
+            android:progress="@={data.position}"
+            app:enableView="@{data.enablePlay}"
+            android:max="100"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:textSize="@dimen/text_size_small"
+            app:layout_constraintTop_toTopOf="@id/seek"
+            app:layout_constraintBottom_toBottomOf="@id/seek"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{data.playedString}"
+            android:id="@+id/played"
+            android:layout_marginStart="@dimen/spacing_half"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:textSize="@dimen/text_size_small"
+            app:layout_constraintTop_toTopOf="@id/seek"
+            app:layout_constraintBottom_toBottomOf="@id/seek"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{data.durationString}"
+            android:layout_marginEnd="@dimen/spacing_half"
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:id="@+id/view_controller"
+            app:layout_constraintTop_toBottomOf="@id/seek"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/alpha_70_black"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:layout_constraintTop_toTopOf="@id/view_controller"
+            app:layout_constraintBottom_toBottomOf="@id/view_controller"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/play_start"
+            app:enableView="@{data.enablePlay}"
+            android:onClick="@{(v)->data.onPlay(v)}"
+            android:padding="@dimen/spacing_normal"
+            app:setImgSrc="@{data.playStatusSrc}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.rokid.rkglassdemokotlin.hardware.HardwareModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".hardware.HardwareActivity">
+
+        <View
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/color_primary"
+            android:id="@+id/top"
+            app:setViewHeight="@{data.topHeight}"
+            android:layout_width="0dp"
+            android:layout_height="21dp"/>
+
+        <View
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top"
+            android:background="@color/color_primary"
+            android:onClick="@{(v)->data.onBack(v)}"
+            android:id="@+id/action_view"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:layout_constraintTop_toTopOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="@id/action_view"
+            app:layout_constraintStart_toStartOf="@id/action_view"
+            app:layout_constraintDimensionRatio="1:1"
+            android:padding="@dimen/spacing_normal"
+            android:id="@+id/back"
+            app:tint="@color/white"
+            app:srcCompat="@drawable/back"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            app:layout_constraintStart_toEndOf="@id/back"
+            app:layout_constraintTop_toTopOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="@id/action_view"
+            android:text="@string/hardware_information"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:contentDescription="@string/hardware_information_content"
+            app:layout_constraintTop_toBottomOf="@id/action_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:text="@string/show_glass_information"
+                    app:setTextSrc="@{data.getInfo}"
+                    android:onClick="@{(v)->data.getInfo(v)}"
+                    android:layout_width="0dp"
+                    android:id="@+id/btn_get_device_information"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintTop_toBottomOf="@id/btn_get_device_information"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:padding="@dimen/spacing_half"
+                    android:background="@drawable/bg_corner"
+                    app:showView="@{data.showGlassInfo}"
+                    android:text="@{data.info}"
+                    android:id="@+id/info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintTop_toBottomOf="@id/info"
+                    android:layout_marginVertical="@dimen/spacing_normal"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:padding="@dimen/spacing_half"
+                    android:background="@drawable/bg_corner"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@{data.brightnessStr}"
+                    android:id="@+id/txv_brightness"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <androidx.appcompat.widget.AppCompatSeekBar
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txv_brightness"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:progress="@={data.brightness}"
+                    android:id="@+id/sk_brightness"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_marginStart="@dimen/side_padding"
+                    app:layout_constraintTop_toTopOf="@id/rg_mode"
+                    app:layout_constraintBottom_toBottomOf="@id/rg_mode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@string/display_mode"
+                    android:id="@+id/txv_mode"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"/>
+
+                <RadioGroup
+                    app:layout_constraintStart_toEndOf="@id/txv_mode"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sk_brightness"
+                    android:orientation="horizontal"
+                    android:id="@+id/rg_mode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:text="2D"
+                        android:checked="@={data.is2D}"
+                        android:layout_marginHorizontal="@dimen/spacing_normal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:text="3D"
+                        android:checked="@={data.is3D}"
+                        android:layout_marginHorizontal="@dimen/spacing_normal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RadioGroup>
+
+
+                <com.google.android.material.button.MaterialButton
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rg_mode"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:text="@string/test_mic_usage"
+                    android:onClick="@{(v)->data.doRecordVoice(v)}"
+                    android:id="@+id/btn_mic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+
+                <com.google.android.material.button.MaterialButton
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_mic"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:text="@string/get_sensor_values"
+                    app:setTextSrc="@{data.sensorValue}"
+                    android:onClick="@{(v)->data.getSensor(v)}"
+                    android:id="@+id/btn_sensor_values"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/btn_sensor_values"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/p_sensor"
+                    app:showView="@{data.showPSensor}"
+                    android:text="@{data.pSensorString}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/p_sensor"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/l_sensor"
+                    app:showView="@{data.showLSensor}"
+                    android:text="@{data.lSensorString}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/l_sensor"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/rotation_vector"
+                    app:showView="@{data.showSameSensor}"
+                    android:text="@{data.rotationVector}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/rotation_vector"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/game_rotation_vector"
+                    app:showView="@{data.showSameSensor}"
+                    android:text="@{data.gameRotationVector}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/game_rotation_vector"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/accelerate"
+                    app:showView="@{data.showAcc}"
+                    android:text="@{data.accelerateValues}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/accelerate"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/gyroscope"
+                    app:showView="@{data.showGyroscope}"
+                    android:text="@{data.gyroscopeValues}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="@dimen/side_padding"
+                    android:layout_marginVertical="@dimen/spacing_half"
+                    app:layout_constraintTop_toBottomOf="@id/gyroscope"
+                    android:background="@drawable/bg_corner"
+                    android:padding="@dimen/spacing_half"
+                    android:id="@+id/magnet"
+                    app:showView="@{data.showSameSensor}"
+                    android:text="@{data.magnetValues}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
