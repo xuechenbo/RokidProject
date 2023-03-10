@@ -24,6 +24,7 @@ import com.rokid.rkglassdemokotlin.base.DataBinding
 import com.rokid.rkglassdemokotlin.databinding.ActivityCameraBinding
 import com.rokid.rkglassdemokotlin.databinding.PreviewSingleBinding
 import com.rokid.rkglassdemokotlin.network.BitmapUtil
+import com.rokid.rkglassdemokotlin.network.MatFactBitmap
 import com.rokid.rkglassdemokotlin.network.Result
 import com.rokid.rkglassdemokotlin.network.ResultCallback
 import com.rokid.rkglassdemokotlin.network.RetrofitNet
@@ -89,7 +90,6 @@ class CameraActivity : BaseActivity() {
                     binding = PreviewSingleBinding.inflate(layoutInflater)
                     binding.lifecycleOwner = this@CameraActivity
                     setContentView(binding.root)
-                    //do things when view is ready
                     binding.texture.surfaceTextureListener = viewModel.getSurfaceListener()
                     preview_name = findViewById(R.id.tv_name)
                     tv_tip = findViewById(R.id.tv_tip)
@@ -100,40 +100,15 @@ class CameraActivity : BaseActivity() {
         }
 
         viewModel.run {
-            imageStrLive.observeForever {
-                val base64ToBitmap = base64ToBitmap(it)
-                try {
-//                    val saveImage = BitmapUtil.saveImage(applicationContext, base64ToBitmap)
-//                    val loacalBitmap = BitmapUtil.getLoacalBitmap(saveImage)
-//                    //加载保存的图片
-//                    findViewById<ImageView>(R.id.image).setImageBitmap(loacalBitmap)
-//                    upLoadImage(saveImage)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-            strName.observeForever {
-                if (it == 0) {
-                    preview_name?.text = ""
+            rectfaceList.observeForever {
+                if (it.isNotEmpty()) {
+                    findViewById<ImageView>(R.id.image).setImageBitmap(it[0].bitmap)
+                    preview_faceView?.drawFaceRect(it, preview_name?.text.toString())
+                    tv_tip?.text = "检测到人脸数量==${it.size}  可信度---$it"
+                } else {
                     preview_faceView?.clearRect()
                     tv_tip?.text = "未检测到人脸"
-                } else {
-                    tv_tip?.text = "检测到人脸数量==${it}"
-                }
-            }
-            //单人人脸框绘制
-            rectString.observeForever {
-//                if (it != null) {
-//                    preview_faceView?.drawFaceRect(it, preview_name?.text.toString())
-//                } else {
-//                    preview_faceView?.clearRect()
-//                }
-            }
-            rectList.observeForever {
-                if (it.isNotEmpty()) {
-                    preview_faceView?.drawFaceRect(it, preview_name?.text.toString())
-                } else {
-                    preview_faceView?.clearRect()
+                    preview_name?.text = ""
                 }
             }
         }
@@ -194,4 +169,5 @@ class CameraActivity : BaseActivity() {
         presentation?.dismiss()
         super.onDestroy()
     }
+
 }

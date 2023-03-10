@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import com.arcsoft.face.FaceInfo;
 import com.rokid.rkglassdemokotlin.R;
+import com.rokid.rkglassdemokotlin.camera.FaceModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class FaceRectView extends View {
     private int screenHeight;
     private Paint mPaint;
     private Paint mPaintText;
-    private List<FaceInfo> faceInfoList = new ArrayList<>();
+    private List<FaceModel> faceInfoList = new ArrayList<>();
 
     public FaceRectView(Context context) {
         this(context, null);
@@ -79,7 +80,7 @@ public class FaceRectView extends View {
 
     }
 
-    public void drawFaceRect(List<FaceInfo> list, String name) {
+    public void drawFaceRect(List<FaceModel> list, String name) {
         faceInfoList = list;
         this.name = name;
         postInvalidate();
@@ -119,7 +120,7 @@ public class FaceRectView extends View {
         if (faceInfoList.size() != 0) {
             for (int i = 0; i < faceInfoList.size(); i++) {
                 if (faceInfoList.get(i).getRect() != null) {
-                    FaceInfo faceInfo = faceInfoList.get(i);
+                    FaceModel faceInfo = faceInfoList.get(i);
                     Rect rect = faceInfo.getRect();
                     int faceId = faceInfo.getFaceId();
                     canvas.drawLine(rect.left, rect.top, rect.left, rect.top + 20, mPaint);

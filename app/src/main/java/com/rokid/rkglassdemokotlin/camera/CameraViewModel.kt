@@ -1,7 +1,6 @@
 package com.rokid.rkglassdemokotlin.camera
 
 import android.graphics.Bitmap
-import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.usb.UsbDevice
 import android.util.Base64
@@ -11,20 +10,23 @@ import androidx.lifecycle.MutableLiveData
 import com.arcsoft.face.*
 import com.arcsoft.face.enums.DetectFaceOrientPriority
 import com.arcsoft.face.enums.DetectMode
+import com.arcsoft.imageutil.ArcSoftImageFormat
+import com.arcsoft.imageutil.ArcSoftImageUtil
 import com.rokid.axr.phone.glasscamera.RKGlassCamera
 import com.rokid.axr.phone.glasscamera.callback.OnGlassCameraConnectListener
 import com.rokid.logger.RKLogger
+import com.rokid.rkglassdemokotlin.app.RKApplication.Companion.appContext
 import com.rokid.rkglassdemokotlin.base.BaseViewModel
+import com.rokid.rkglassdemokotlin.network.MatFactBitmap
+import com.rokid.rkglassdemokotlin.test.NV21ToBitmap
 import com.rokid.utils.ContextUtil.getApplicationContext
 import java.io.ByteArrayOutputStream
 import java.util.*
 
 
 class CameraViewModel : BaseViewModel() {
-    val imageStrLive: MutableLiveData<String> = MutableLiveData()
-    val rectString: MutableLiveData<Rect> = MutableLiveData()
     val rectList: MutableLiveData<List<FaceInfo>> = MutableLiveData()
-    val strName: MutableLiveData<Int> = MutableLiveData()
+    val rectfaceList: MutableLiveData<List<FaceModel>> = MutableLiveData()
     private lateinit var model: CameraModel
     val faceEngine = FaceEngine()
 
@@ -55,8 +57,9 @@ class CameraViewModel : BaseViewModel() {
 
     //初始化sdk
     fun initFaceSDK() {
-        // 如下的组合，初始化的功能包含：人脸检测、人脸识别
-        val initMask = FaceEngine.ASF_FACE_DETECT or FaceEngine.ASF_FACE_RECOGNITION
+        // 如下的组合，初始化的功能包含：人脸检测、人脸识别 图片质量检测
+        val initMask =
+            FaceEngine.ASF_FACE_DETECT or FaceEngine.ASF_FACE_RECOGNITION or FaceEngine.ASF_IMAGEQUALITY
         val code = faceEngine.init(
             getApplicationContext(),
             DetectMode.ASF_DETECT_MODE_VIDEO,
@@ -173,8 +176,9 @@ class CameraViewModel : BaseViewModel() {
             shownPages++
             val current = System.currentTimeMillis()
             val fps = ((shownPages * 1000) / (current - startTimeMillion))
-            //FaceSDK
+
             val faceInfoList: List<FaceInfo> = ArrayList()
+            val faceModelList: MutableList<FaceModel> = ArrayList()
             val code = faceEngine.detectFaces(
                 nv21,
                 1920,
@@ -182,38 +186,44 @@ class CameraViewModel : BaseViewModel() {
                 FaceEngine.CP_PAF_NV21,
                 faceInfoList
             )
-            //图片质量检测
-//            val imageQualitySimilar = ImageQualitySimilar()
-//            val imageQualityDetect = faceEngine.imageQualityDetect(
-//                nv21,
-//                1920,
-//                1080,
-//                FaceEngine.CP_PAF_BGR24,
-//                faceInfoList.get(0),
-//                0,
-//                imageQualitySimilar
-//            )
             if (code == ErrorInfo.MOK && faceInfoList.isNotEmpty()) {
-                //TODO 如果数量为1 获取当前图像传给后台服务器
-                //faceId 一张人脸从进入画面直到离开画面，faceId不变。
-//                if (faceId != faceInfoList[0].faceId) {
-//                    faceId = faceInfoList[0].faceId
-//                    val nv21ToBitmap = NV21ToBitmap(
-//                        appContext
-//                    ).nv21ToBitmap(nv21, 1920, 1080)
-//                    val bitmapToString = bitmapToBase64(nv21ToBitmap)
-//                    imageStrLive.postValue(bitmapToString)
-//                } else {
-//                    //同一张人脸 return
-//                }
+                //保存到FaceModel
+                faceInfoList.forEach {
+                    // bitmap转bgr24
+                    val nv21ToBitmap = NV21ToBitmap(appContext).nv21ToBitmap(nv21, 1920, 1080)
 
-                strName.postValue(faceInfoList.size)
-//                rectString.postValue(faceInfoList[0].rect)
-                rectList.postValue(faceInfoList)
+                    val imageQualitySimilar = ImageQualitySimilar()
+                    val bgr24 = ArcSoftImageUtil.createImageData(
+                        nv21ToBitmap.width,
+                        nv21ToBitmap.height,
+                        ArcSoftImageFormat.BGR24
+                    )
+                    val imageQualityDetectCode = faceEngine.imageQualityDetect(
+                        bgr24,
+                        nv21ToBitmap.width,
+                        nv21ToBitmap.height,
+                        FaceEngine.CP_PAF_BGR24,
+                        it,
+                        0,
+                        imageQualitySimilar
+                    )
+                    //图片质量检测
+                    if (imageQualityDetectCode == ErrorInfo.MOK) {
+                        val faceBitmap =
+                            MatFactBitmap.getFaceBitmap(nv21ToBitmap, faceInfoList[0].rect)
+                        faceModelList.add(
+                            FaceModel(
+                                it.faceId,
+                                it.rect,
+                                faceBitmap,
+                                imageQualitySimilar.score
+                            )
+                        )
+                    }
+                }
+                rectfaceList.postValue(faceModelList)
             } else {
-                strName.postValue(0)
-//                rectString.postValue(Rect())
-                rectList.postValue(faceInfoList)
+                rectfaceList.postValue(faceModelList)
             }
         }
     }
