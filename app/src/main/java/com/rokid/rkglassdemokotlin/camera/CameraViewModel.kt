@@ -178,7 +178,7 @@ class CameraViewModel : BaseViewModel() {
             val fps = ((shownPages * 1000) / (current - startTimeMillion))
 
             val faceInfoList: List<FaceInfo> = ArrayList()
-            val faceModelList: MutableList<FaceModel> = ArrayList()
+            var faceModelList: MutableList<FaceModel> = ArrayList()
             val code = faceEngine.detectFaces(
                 nv21,
                 1920,
@@ -188,7 +188,7 @@ class CameraViewModel : BaseViewModel() {
             )
             if (code == ErrorInfo.MOK && faceInfoList.isNotEmpty()) {
                 //保存到FaceModel
-                faceInfoList.forEach {
+                faceInfoList.forEachIndexed { index, it ->
                     // bitmap转bgr24
                     val nv21ToBitmap = NV21ToBitmap(appContext).nv21ToBitmap(nv21, 1920, 1080)
 
@@ -210,7 +210,7 @@ class CameraViewModel : BaseViewModel() {
                     //图片质量检测
                     if (imageQualityDetectCode == ErrorInfo.MOK) {
                         val faceBitmap =
-                            MatFactBitmap.getFaceBitmap(nv21ToBitmap, faceInfoList[0].rect)
+                            MatFactBitmap.getFaceBitmap(nv21ToBitmap, faceInfoList[index].rect)
                         faceModelList.add(
                             FaceModel(
                                 it.faceId,

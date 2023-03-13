@@ -6,15 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Base64
 import android.util.Log
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.TextView
 import com.rokid.rkglassdemokotlin.FaceRectView
 import com.rokid.rkglassdemokotlin.R
@@ -23,17 +20,19 @@ import com.rokid.rkglassdemokotlin.base.BaseActivity
 import com.rokid.rkglassdemokotlin.base.DataBinding
 import com.rokid.rkglassdemokotlin.databinding.ActivityCameraBinding
 import com.rokid.rkglassdemokotlin.databinding.PreviewSingleBinding
-import com.rokid.rkglassdemokotlin.network.BitmapUtil
-import com.rokid.rkglassdemokotlin.network.MatFactBitmap
 import com.rokid.rkglassdemokotlin.network.Result
 import com.rokid.rkglassdemokotlin.network.ResultCallback
 import com.rokid.rkglassdemokotlin.network.RetrofitNet
+import com.rokid.rkglassdemokotlin.utils.BitmapRequestBody
+import com.rokid.rkglassdemokotlin.utils.Utils
+import okhttp3.FormBody
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import java.io.File
-import java.io.IOException
+
 
 /**
  * Camera activity
@@ -51,6 +50,9 @@ class CameraActivity : BaseActivity() {
     private var preview_faceView: com.rokid.rkglassdemokotlin.view.FaceRectView? = null
     private var preview_name: TextView? = null
     private var tv_tip: TextView? = null
+
+    //人脸数据
+    var mFacelList: MutableList<FaceModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +86,6 @@ class CameraActivity : BaseActivity() {
         (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).let {
             presentation = object : Presentation(this, it.displays[it.displays.size.minus(1)]) {
                 private lateinit var binding: PreviewSingleBinding
-
                 override fun onCreate(savedInstanceState: Bundle?) {
                     super.onCreate(savedInstanceState)
                     binding = PreviewSingleBinding.inflate(layoutInflater)
@@ -100,18 +101,61 @@ class CameraActivity : BaseActivity() {
         }
 
         viewModel.run {
-            rectfaceList.observeForever {
+            rectfaceList.observeForever { it ->
+                if (it.size == mFacelList.size && Utils.IsEquest(it, mFacelList)) {
+                    // 遍历时获取索引位置
+                    it.forEachIndexed { index, s ->
+                        s.name = mFacelList[index].name
+                    }
+                } else {
+                    //子线程人脸识别
+                    mFacelList.clear()
+                    mFacelList.addAll(it)
+                    it.forEachIndexed { index, it ->
+                        if (index==0){
+                            dataBinding.image?.setImageBitmap(it.bitmap)
+                        }else{
+                            dataBinding.image1?.setImageBitmap(it.bitmap)
+                        }
+                        getImageName(it.bitmap, it.faceId, index)
+                    }
+                }
                 if (it.isNotEmpty()) {
-                    findViewById<ImageView>(R.id.image).setImageBitmap(it[0].bitmap)
                     preview_faceView?.drawFaceRect(it, preview_name?.text.toString())
-                    tv_tip?.text = "检测到人脸数量==${it.size}  可信度---$it"
                 } else {
                     preview_faceView?.clearRect()
-                    tv_tip?.text = "未检测到人脸"
                     preview_name?.text = ""
+                    tv_tip?.text = "未检测到人脸"
+                    mFacelList.clear()
                 }
             }
         }
+    }
+
+    private fun getImageName(bitmap: Bitmap, faceId: Int, index: Int) {
+        val bitmapRequestBody = BitmapRequestBody(bitmap)
+        val createFormData =
+            MultipartBody.Part.createFormData("file", faceId.toString(), bitmapRequestBody)
+        val create = RequestBody.create("text/plain".toMediaTypeOrNull(), faceId.toString())
+        RetrofitNet.getInstance().api.updateSignStrname(create, createFormData)
+            .enqueue(object : ResultCallback<Result<FaceBean>>() {
+                override fun onSuccess(response: Response<Result<FaceBean>?>) {
+                    val body = response.body()
+                    tv_tip?.text = ""
+                    preview_name?.text = body?.data?.name
+                    if (mFacelList.size >= index) {
+                        mFacelList[index].name = body?.data?.name
+                    }
+
+                }
+
+                override fun onFail(message: String) {
+                    Log.e("HTTP::onFail", message)
+                    tv_tip?.text = "onFail-------${message}" + System.currentTimeMillis()
+//                    mFacelList.clear()
+
+                }
+            })
     }
 
     private fun upLoadImage(path: String) {
@@ -123,7 +167,7 @@ class CameraActivity : BaseActivity() {
             .enqueue(object : ResultCallback<Result<FaceBean>>() {
                 override fun onSuccess(response: Response<Result<FaceBean>?>) {
                     val body = response.body()
-                    preview_name?.text = body?.data?.key
+//                    preview_name?.text = body?.data?.key
                 }
 
                 override fun onFail(message: String) {
@@ -133,10 +177,6 @@ class CameraActivity : BaseActivity() {
             })
     }
 
-    fun base64ToBitmap(base64Data: String?): Bitmap? {
-        val bytes = Base64.decode(base64Data, Base64.NO_WRAP)
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

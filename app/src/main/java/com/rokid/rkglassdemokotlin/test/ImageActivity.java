@@ -76,7 +76,7 @@ public class ImageActivity extends AppCompatActivity {
         RetrofitNet.getInstance().getApi().updateSignStr(body).enqueue(new ResultCallback<Result<FaceBean>>() {
             @Override
             public void onSuccess(Response<Result<FaceBean>> response) {
-                Log.e("HTTP====", response.body().getData().getKey());
+//                Log.e("HTTP====", response.body().getData().getKey());
             }
 
             @Override

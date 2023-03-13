@@ -49,7 +49,6 @@ public class FaceRectView extends View {
     }
 
     private void initPaint(Context context) {
-
         mPaintText = new Paint();
         mPaintText.setAntiAlias(true);
         mPaintText.setStrokeWidth(6);
@@ -138,7 +137,8 @@ public class FaceRectView extends View {
                     canvas.drawLine(rect.right, rect.bottom, rect.right, rect.bottom - 20, mPaint);
                     //右下角的横线
                     canvas.drawLine(rect.right, rect.bottom, rect.right - 20, rect.bottom, mPaint);
-                    canvas.drawText(faceId + "", rect.left - 20, rect.top - 20, mPaintText);
+//                    canvas.drawText(name, rect.left - 20, rect.top - 20, mPaintText);
+                    canvas.drawText(faceInfo.getName() + faceId, rect.left - 20, rect.top - 20, mPaintText);
                 }
             }
         }

@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitNet {
 //    private static final String BASE_URL = "https://www.wanandroid.com/";
-    private static final String BASE_URL = "http://172.29.10.10:8888/";
+    private static final String BASE_URL = "http://39.105.6.180:8888/";
 //    private static final String BASE_URL = "http://39.105.6.180:8888/";
     private static final int DEFAULT_TIME_OUT = 20;
     private static final int DEFAULT_READ_TIME_OUT = 25;

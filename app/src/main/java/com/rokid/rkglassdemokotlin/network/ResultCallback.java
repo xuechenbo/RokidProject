@@ -17,7 +17,7 @@ public abstract class ResultCallback<T extends Result> implements Callback<T> {
                 if (errorCode == 200) {
                     onSuccess(response);
                 } else {
-                    onFail(response.body().getMessage());
+                    onFail(response.body().getMsg());
                 }
             } catch (Exception e) {
                 onFail("解析错误");

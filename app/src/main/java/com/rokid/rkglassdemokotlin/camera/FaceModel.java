@@ -16,6 +16,16 @@ public class FaceModel {
     private Bitmap bitmap;
     private float imageQualitySimilar;
 
+    private String name = "";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public float getImageQualitySimilar() {
         return imageQualitySimilar;
     }
@@ -48,11 +58,16 @@ public class FaceModel {
         this.bitmap = bitmap;
     }
 
-
     @Override
     public String toString() {
         return
                 "faceId=" + faceId +
-                ", imageQualitySimilar=" + imageQualitySimilar;
+                        ", imageQualitySimilar=" + imageQualitySimilar +
+                        ", name=" + name;
     }
+
+
+    //    public int getFaceIdTotal() {
+//        return
+//    }
 }

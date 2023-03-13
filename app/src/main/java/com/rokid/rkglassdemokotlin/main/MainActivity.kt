@@ -22,7 +22,18 @@ import com.rokid.rkglassdemokotlin.app.RKApplication
 import com.rokid.rkglassdemokotlin.base.BaseActivity
 import com.rokid.rkglassdemokotlin.base.DataBinding
 import com.rokid.rkglassdemokotlin.databinding.ActivityMainBinding
+import com.rokid.rkglassdemokotlin.network.BitmapUtil
+import com.rokid.rkglassdemokotlin.network.Result
+import com.rokid.rkglassdemokotlin.network.ResultCallback
+import com.rokid.rkglassdemokotlin.network.RetrofitNet
+import com.rokid.rkglassdemokotlin.utils.BitmapRequestBody
 import com.rokid.utils.ContextUtil
+import okhttp3.FormBody
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 
@@ -50,9 +61,12 @@ class MainActivity : BaseActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         //初始化虹软人脸
         initFaceEngine()
+//        val drawableToBmp = BitmapUtil.drawableToBmp(this, R.drawable.ym);
+//        getImageName(drawableToBmp, 1)
     }
 
-    private fun initFaceEngine(){
+
+    private fun initFaceEngine() {
         //debug包
 //        val APP_ID = "7eQRFaiqEXoj5KysU5hT7Lidpdvzz9WxyKpfpa9mfyDH"
 //        val SDK_KEY = "FnpHdxcZzaLPwc9NfRGaTvfmYCPc9azhWoWVc8EHEdCu"
@@ -62,19 +76,19 @@ class MainActivity : BaseActivity() {
         val SDK_KEY = "FnpHdxcZzaLPwc9NfRGaTvfmYCPc9azhWoWVc8EHEdCu"
         val ACTIVE_KEY = "85Q1-11GJ-212H-4N4G"
         val code = FaceEngine.activeOnline(this, ACTIVE_KEY, APP_ID, SDK_KEY)
-        if(code == ErrorInfo.MOK){
-            Toast.makeText(applicationContext,"初始化成功",Toast.LENGTH_SHORT).show()
+        if (code == ErrorInfo.MOK) {
+            Toast.makeText(applicationContext, "初始化成功", Toast.LENGTH_SHORT).show()
             Log.i("TAG", "activeOnline success");
-        }else if(code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED){
-            Toast.makeText(applicationContext,"已经激活",Toast.LENGTH_SHORT).show()
+        } else if (code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+            Toast.makeText(applicationContext, "已经激活", Toast.LENGTH_SHORT).show()
             Log.i("TAG", "already activated");
-        }else{
-            Toast.makeText(applicationContext,"初始化失败"+code,Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(applicationContext, "初始化失败" + code, Toast.LENGTH_SHORT).show()
             Log.i("TAG", "activeOnline failed, code is : " + code);
         }
     }
 
-    fun initFaceSDK (){
+    fun initFaceSDK() {
         // 如下的组合，初始化的功能包含：人脸检测、人脸识别
         val initMask = FaceEngine.ASF_FACE_DETECT or FaceEngine.ASF_FACE_RECOGNITION
         val code = faceEngine.init(
@@ -84,11 +98,11 @@ class MainActivity : BaseActivity() {
             5,
             initMask
         )
-        Log.e("TAG","code="+code)
+        Log.e("TAG", "code=" + code)
     }
 
 
-    private fun init(){
+    private fun init() {
         val image = findViewById<ImageView>(R.id.image)
         val drawableToBmp = drawableToBmp(RKApplication.appContext, R.drawable.qqw)
 
@@ -119,6 +133,7 @@ class MainActivity : BaseActivity() {
         val d = context.resources.getDrawable(drawableId)
         return drawableToBmp(d)
     }
+
     fun drawableToBmp(drawable: Drawable): Bitmap? {
         if (drawable is BitmapDrawable) {
             return drawable.bitmap

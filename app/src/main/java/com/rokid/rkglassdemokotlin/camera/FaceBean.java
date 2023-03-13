@@ -4,27 +4,31 @@ import com.rokid.rkglassdemokotlin.network.Result;
 
 public class FaceBean extends Result {
 
-    private String key;
-    private String similar;
+    private String name;
+    private String faceId;
 
-    public String getKey() {
-        return key;
+
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSimilar() {
-        return similar;
+    public String getFaceId() {
+        return faceId;
     }
 
-    public void setSimilar(String similar) {
-        this.similar = similar;
+    public void setFaceId(String faceId) {
+        this.faceId = faceId;
     }
 
     @Override
     public String toString() {
-        return key;
+        return "FaceBean{" +
+                "name='" + name + '\'' +
+                ", faceId='" + faceId + '\'' +
+                '}';
     }
 }

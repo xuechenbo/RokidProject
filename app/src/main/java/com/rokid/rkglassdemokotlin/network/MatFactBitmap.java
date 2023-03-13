@@ -26,8 +26,8 @@ public class MatFactBitmap {
         newRect.inset(-offsetX, -offsetY);
         //创建Bitmap，假设需要顺时针旋转90°
         Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        Bitmap bitmap = Bitmap.createBitmap(source, newRect.left, newRect.top, newRect.width(), newRect.height(), matrix, true);
+        matrix.postRotate(0);
+        Bitmap bitmap = Bitmap.createBitmap(source, newRect.left-60, newRect.top-60, newRect.width() + 60, newRect.height() + 60, matrix, true);
         return bitmap;
     }
 }
