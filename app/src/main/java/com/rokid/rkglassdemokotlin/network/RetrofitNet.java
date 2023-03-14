@@ -45,7 +45,7 @@ public class RetrofitNet {
         builder.readTimeout(DEFAULT_READ_TIME_OUT, TimeUnit.SECONDS);//读操作超时时间
         builder.writeTimeout(DEFAULT_READ_TIME_OUT, TimeUnit.SECONDS);
         //最大连接数
-        builder.connectionPool(new ConnectionPool(100, 8, TimeUnit.MINUTES));
+//        builder.connectionPool(new ConnectionPool(100, 8, TimeUnit.MINUTES));
         if (BuildConfig.DEBUG) {
             // 日志显示级别
             HttpLoggingInterceptor.Level level = HttpLoggingInterceptor.Level.BODY;

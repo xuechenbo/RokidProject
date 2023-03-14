@@ -17,6 +17,15 @@ public class FaceModel {
     private float imageQualitySimilar;
 
     private String name = "";
+    private int requestsNum;
+
+
+    public int getRequestsNum() {
+        return requestsNum;
+    }
+    public void setRequestsNum(int requestsNum) {
+        this.requestsNum = requestsNum;
+    }
 
     public String getName() {
         return name;
@@ -65,9 +74,4 @@ public class FaceModel {
                         ", imageQualitySimilar=" + imageQualitySimilar +
                         ", name=" + name;
     }
-
-
-    //    public int getFaceIdTotal() {
-//        return
-//    }
 }

@@ -9,9 +9,13 @@ import android.graphics.Bitmap
 import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Switch
 import android.widget.TextView
 import com.rokid.rkglassdemokotlin.FaceRectView
 import com.rokid.rkglassdemokotlin.R
@@ -25,8 +29,6 @@ import com.rokid.rkglassdemokotlin.network.ResultCallback
 import com.rokid.rkglassdemokotlin.network.RetrofitNet
 import com.rokid.rkglassdemokotlin.utils.BitmapRequestBody
 import com.rokid.rkglassdemokotlin.utils.Utils
-import okhttp3.FormBody
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -50,9 +52,29 @@ class CameraActivity : BaseActivity() {
     private var preview_faceView: com.rokid.rkglassdemokotlin.view.FaceRectView? = null
     private var preview_name: TextView? = null
     private var tv_tip: TextView? = null
+    private var questNum = 0
 
     //人脸数据
     var mFacelList: MutableList<FaceModel> = ArrayList()
+
+    var handler: Handler = object : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            when (msg.what) {
+                0 -> {
+                    //失败再次请求 判断mFacelList是否包含
+                    mFacelList?.forEachIndexed { _, faceModel ->
+                        if (faceModel.faceId == msg.arg1 && faceModel.name.isEmpty()) {
+                            faceModel.requestsNum = 1
+                        }
+                    }
+                }
+                1 -> {
+                    //成功
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,19 +126,20 @@ class CameraActivity : BaseActivity() {
             rectfaceList.observeForever { it ->
                 if (it.size == mFacelList.size && Utils.IsEquest(it, mFacelList)) {
                     // 遍历时获取索引位置
-                    it.forEachIndexed { index, s ->
-                        s.name = mFacelList[index].name
+                    it.forEachIndexed { index, mIt ->
+                        if (mFacelList[index].name.isEmpty() && mFacelList[index].requestsNum == 1) {
+                            //如果前一个没有获取到，重新获取，判断是否请求完成
+                            getImageName(mIt.bitmap, mIt.faceId, index)
+                            mFacelList[index].requestsNum = 0
+                        } else {
+                            mIt.name = mFacelList[index].name
+                        }
                     }
                 } else {
                     //子线程人脸识别
                     mFacelList.clear()
                     mFacelList.addAll(it)
                     it.forEachIndexed { index, it ->
-                        if (index==0){
-                            dataBinding.image?.setImageBitmap(it.bitmap)
-                        }else{
-                            dataBinding.image1?.setImageBitmap(it.bitmap)
-                        }
                         getImageName(it.bitmap, it.faceId, index)
                     }
                 }
@@ -141,42 +164,26 @@ class CameraActivity : BaseActivity() {
             .enqueue(object : ResultCallback<Result<FaceBean>>() {
                 override fun onSuccess(response: Response<Result<FaceBean>?>) {
                     val body = response.body()
-                    tv_tip?.text = ""
-                    preview_name?.text = body?.data?.name
+                    questNum++
+                    tv_tip?.text = "成功$questNum"
                     if (mFacelList.size >= index) {
                         mFacelList[index].name = body?.data?.name
                     }
-
                 }
 
                 override fun onFail(message: String) {
-                    Log.e("HTTP::onFail", message)
-                    tv_tip?.text = "onFail-------${message}" + System.currentTimeMillis()
-//                    mFacelList.clear()
-
+                    if (message.contains("请先注册")) {
+                        tv_tip?.text = "失败$message"
+                    } else {
+                        handler.sendMessage(Message().apply {
+                            what = 0
+                            arg1 = faceId
+                        })
+                        questNum++
+                    }
                 }
             })
     }
-
-    private fun upLoadImage(path: String) {
-        val file = File(path)
-        Log.e("TAG", "uploadHeadImage: File=====" + file.absolutePath)
-        val create = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
-        val createFormData = MultipartBody.Part.createFormData("file", file.name, create)
-        RetrofitNet.getInstance().api.updateSignStr(createFormData)
-            .enqueue(object : ResultCallback<Result<FaceBean>>() {
-                override fun onSuccess(response: Response<Result<FaceBean>?>) {
-                    val body = response.body()
-//                    preview_name?.text = body?.data?.key
-                }
-
-                override fun onFail(message: String) {
-                    Log.e("HTTP::onFail", message)
-                    preview_name?.text = "onFail==$message"
-                }
-            })
-    }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

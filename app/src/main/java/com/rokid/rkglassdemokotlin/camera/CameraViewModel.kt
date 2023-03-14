@@ -209,8 +209,7 @@ class CameraViewModel : BaseViewModel() {
                     )
                     //图片质量检测
                     if (imageQualityDetectCode == ErrorInfo.MOK) {
-                        val faceBitmap =
-                            MatFactBitmap.getFaceBitmap(nv21ToBitmap, faceInfoList[index].rect)
+                        val faceBitmap = MatFactBitmap.getFaceBitmap(nv21ToBitmap, faceInfoList[index].rect)
                         faceModelList.add(
                             FaceModel(
                                 it.faceId,
