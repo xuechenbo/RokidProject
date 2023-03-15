@@ -42,10 +42,11 @@ public interface AppService {
     @POST("face/face_search")
     Call<FaceBean> updateSign(@Part MultipartBody.Part file);
 
+    //人脸注册
     @Multipart
-    @POST("face/face_search")
-    Call<Result<FaceBean>> updateSignStr(@Part MultipartBody.Part file);
-
+    @POST("face/faceRegister")
+    Call<Result<String>> faceRegister(@Part("name") RequestBody body, @Part MultipartBody.Part file);
+    //人脸识别
     @Multipart
     @POST("face/faceSearchV2")
     Call<Result<FaceBean>> updateSignStrname(@Part("faceId") RequestBody body, @Part MultipartBody.Part file);

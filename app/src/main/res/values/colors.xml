@@ -13,7 +13,7 @@
     <color name="alpha_70_black">#B4000000</color>
     <color name="alpha_80_black">#CC000000</color>
     <color name="alpha_90_black">#EA000000</color>
-
+    <color name="transparent">#00000000</color>
     <!-- 透明白色 -->
     <color name="alpha_10_white">#1AFFFFFF</color>
     <color name="alpha_20_white">#34FFFFFF</color>

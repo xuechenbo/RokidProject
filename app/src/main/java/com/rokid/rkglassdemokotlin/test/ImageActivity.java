@@ -69,21 +69,21 @@ public class ImageActivity extends AppCompatActivity {
 
     //上传图片
     private void upLoadImage(String path) {
-        File file = new File(path);
-        Log.e("TAG", "uploadHeadImage: File=====" + file.getAbsolutePath());
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        RetrofitNet.getInstance().getApi().updateSignStr(body).enqueue(new ResultCallback<Result<FaceBean>>() {
-            @Override
-            public void onSuccess(Response<Result<FaceBean>> response) {
-//                Log.e("HTTP====", response.body().getData().getKey());
-            }
-
-            @Override
-            public void onFail(String message) {
-                Log.e("HTTP====", message);
-            }
-        });
+//        File file = new File(path);
+//        Log.e("TAG", "uploadHeadImage: File=====" + file.getAbsolutePath());
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+//        RetrofitNet.getInstance().getApi().updateSignStr(body).enqueue(new ResultCallback<Result<FaceBean>>() {
+//            @Override
+//            public void onSuccess(Response<Result<FaceBean>> response) {
+////                Log.e("HTTP====", response.body().getData().getKey());
+//            }
+//
+//            @Override
+//            public void onFail(String message) {
+//                Log.e("HTTP====", message);
+//            }
+//        });
     }
 
     //测试嘞

@@ -12,11 +12,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.provider.ContactsContract.Contacts.Photo
 import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import com.rokid.rkglassdemokotlin.FaceRectView
 import com.rokid.rkglassdemokotlin.R
 import com.rokid.rkglassdemokotlin.app.DeviceType
@@ -29,6 +31,7 @@ import com.rokid.rkglassdemokotlin.network.ResultCallback
 import com.rokid.rkglassdemokotlin.network.RetrofitNet
 import com.rokid.rkglassdemokotlin.utils.BitmapRequestBody
 import com.rokid.rkglassdemokotlin.utils.Utils
+import com.rokid.utils.ToastUtils
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -45,6 +48,7 @@ import java.io.File
 class CameraActivity : BaseActivity() {
     //viewDataBinding
     private lateinit var dataBinding: ActivityCameraBinding
+    private lateinit var model: CameraModel
 
     //base on BaseViewModel
     private lateinit var viewModel: CameraViewModel
@@ -91,6 +95,9 @@ class CameraActivity : BaseActivity() {
         //set dataBinding's source data.
         dataBinding.data = viewModel.getModel().apply {
             topHeight.postValue(DataBinding.getStatusBarHeight(this@CameraActivity))
+            photo.observeForever {
+                showTip(it)
+            }
         }
         //this test will use camera and microphone to record videos, so the follows permissions should be confirmed.
         requestPermissions(
@@ -123,22 +130,24 @@ class CameraActivity : BaseActivity() {
         }
 
         viewModel.run {
+
             rectfaceList.observeForever { it ->
                 if (it.size == mFacelList.size && Utils.IsEquest(it, mFacelList)) {
                     // 遍历时获取索引位置
                     it.forEachIndexed { index, mIt ->
-                        if (mFacelList[index].name.isEmpty() && mFacelList[index].requestsNum == 1) {
+                        if (mFacelList[index]?.name.isEmpty() && mFacelList[index]?.requestsNum == 1) {
+                            mFacelList[index]?.requestsNum = 0
                             //如果前一个没有获取到，重新获取，判断是否请求完成
                             getImageName(mIt.bitmap, mIt.faceId, index)
-                            mFacelList[index].requestsNum = 0
                         } else {
-                            mIt.name = mFacelList[index].name
+                            mIt.name = mFacelList[index]?.name
                         }
                     }
                 } else {
                     //子线程人脸识别
                     mFacelList.clear()
                     mFacelList.addAll(it)
+                    handler.removeMessages(0)
                     it.forEachIndexed { index, it ->
                         getImageName(it.bitmap, it.faceId, index)
                     }
@@ -152,9 +161,13 @@ class CameraActivity : BaseActivity() {
                     mFacelList.clear()
                 }
             }
+
         }
     }
 
+    fun showTip(msg:String){
+        ToastUtils.makeText(this,msg)
+    }
     private fun getImageName(bitmap: Bitmap, faceId: Int, index: Int) {
         val bitmapRequestBody = BitmapRequestBody(bitmap)
         val createFormData =
@@ -167,7 +180,7 @@ class CameraActivity : BaseActivity() {
                     questNum++
                     tv_tip?.text = "成功$questNum"
                     if (mFacelList.size >= index) {
-                        mFacelList[index].name = body?.data?.name
+                        mFacelList[index]?.name = body?.data?.name
                     }
                 }
 
@@ -175,6 +188,7 @@ class CameraActivity : BaseActivity() {
                     if (message.contains("请先注册")) {
                         tv_tip?.text = "失败$message"
                     } else {
+                        tv_tip?.text = ""
                         handler.sendMessage(Message().apply {
                             what = 0
                             arg1 = faceId

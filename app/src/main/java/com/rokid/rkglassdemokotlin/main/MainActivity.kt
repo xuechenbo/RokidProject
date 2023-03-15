@@ -21,19 +21,9 @@ import com.rokid.rkglassdemokotlin.R
 import com.rokid.rkglassdemokotlin.app.RKApplication
 import com.rokid.rkglassdemokotlin.base.BaseActivity
 import com.rokid.rkglassdemokotlin.base.DataBinding
+import com.rokid.rkglassdemokotlin.camera.ShowResumeMsgDialog
 import com.rokid.rkglassdemokotlin.databinding.ActivityMainBinding
-import com.rokid.rkglassdemokotlin.network.BitmapUtil
-import com.rokid.rkglassdemokotlin.network.Result
-import com.rokid.rkglassdemokotlin.network.ResultCallback
-import com.rokid.rkglassdemokotlin.network.RetrofitNet
-import com.rokid.rkglassdemokotlin.utils.BitmapRequestBody
 import com.rokid.utils.ContextUtil
-import okhttp3.FormBody
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 
@@ -63,6 +53,9 @@ class MainActivity : BaseActivity() {
         initFaceEngine()
 //        val drawableToBmp = BitmapUtil.drawableToBmp(this, R.drawable.ym);
 //        getImageName(drawableToBmp, 1)
+
+//        var showResumeMsgDialog = ShowResumeMsgDialog.getInstance()
+//        showResumeMsgDialog.show(supportFragmentManager, "")
     }
 
 

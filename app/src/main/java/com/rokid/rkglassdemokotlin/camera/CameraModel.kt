@@ -1,9 +1,11 @@
 package com.rokid.rkglassdemokotlin.camera
 
 import android.app.AlertDialog
+import android.app.Application
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.media.MediaPlayer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.TextureView
@@ -11,7 +13,6 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.rokid.axr.phone.glasscamera.RKGlassCamera
@@ -22,9 +23,18 @@ import com.rokid.rkglassdemokotlin.app.RKApplication
 import com.rokid.rkglassdemokotlin.base.BaseEvent
 import com.rokid.rkglassdemokotlin.databinding.ImgFullBinding
 import com.rokid.rkglassdemokotlin.databinding.VideoplayerBinding
+import com.rokid.rkglassdemokotlin.network.Result
+import com.rokid.rkglassdemokotlin.network.ResultCallback
+import com.rokid.rkglassdemokotlin.network.RetrofitNet
 import com.rokid.uvc.usb.common.AbstractUVCCameraHandler
 import com.rokid.uvc.usb.encoder.RecordParams
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Response
 import java.io.File
+
 
 /**
  * Camera action
@@ -75,6 +85,7 @@ data class CameraModel(
     val previewSrc: MutableLiveData<Int> = MutableLiveData(),
     val zoom: MutableLiveData<Int> = MutableLiveData(),
     val ae: MutableLiveData<Int> = MutableLiveData(),
+    val photo: MutableLiveData<String> = MutableLiveData(),
     val action: (CameraAction, BaseEvent?) -> Unit
 ) {
 
@@ -194,17 +205,44 @@ data class CameraModel(
                         bingding.lifecycleOwner = context as AppCompatActivity
                         val img = bingding.img
                         Glide.with(context).load(it).into(img)
+                        bingding.register.setOnClickListener {
+                            if (bingding.etContent.text.isNotEmpty()) {
+                                upLoadImage(savePath, bingding.etContent.text.toString())
+                            } else {
+                                Toast.makeText(context, "请输入名称", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                         val alterDialogBuilder = AlertDialog.Builder(context)
                             .setCancelable(true)
-                            .setPositiveButton(R.string.ensure) { dialogInterface, _ ->
+                            .setPositiveButton(R.string.close) { dialogInterface, _ ->
                                 dialogInterface.dismiss()
                             }
                             .setView(bingding.root)
-
                         alterDialogBuilder.create().show()
+
                     }
                 })
             }
+    }
+
+    private fun upLoadImage(path: String, name: String) {
+        val file = File(path)
+        val createFormData = MultipartBody.Part.createFormData(
+            "file",
+            file.name,
+            RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+        )
+        val name = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
+        RetrofitNet.getInstance().api.faceRegister(name, createFormData)
+            .enqueue(object : ResultCallback<Result<String>>() {
+                override fun onSuccess(response: Response<Result<String>?>) {
+                    photo.postValue("注册成功")
+                }
+
+                override fun onFail(message: String) {
+                    photo.postValue(message)
+                }
+            })
     }
 
     private var threadOn = false
@@ -240,7 +278,8 @@ data class CameraModel(
 
 
                 RKGlassCamera.getInstance().startRecord(RecordParams().apply {
-                    isVoiceClose =  false//true to close voice record,just record video; False to enable record video with voice.
+                    isVoiceClose =
+                        false//true to close voice record,just record video; False to enable record video with voice.
 //            recordDuration = 6//set record duration to stop record automatic. Unit of minutes.
                     this.recordPath = File(v.context.filesDir, "video.mp4").absolutePath
                 }, object : AbstractUVCCameraHandler.OnEncodeResultListener {
