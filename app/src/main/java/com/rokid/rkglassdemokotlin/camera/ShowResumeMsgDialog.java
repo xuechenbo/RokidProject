@@ -16,8 +16,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.rokid.rkglassdemokotlin.R;
 import com.rokid.utils.ToastUtils;
-
-
 public class ShowResumeMsgDialog extends DialogFragment {
     private String url;
 
@@ -61,25 +59,16 @@ public class ShowResumeMsgDialog extends DialogFragment {
 
     private void initData(View view) {
         Dialog dialog = getDialog();
-//        view.findViewById()
         EditText editName = view.findViewById(R.id.et_content);
         view.findViewById(R.id.register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (editName.getText().toString().isEmpty()) {
-                    ToastUtils.makeText(getActivity(), "请输入名称");
-                    return;
-                }
-                registerPhone();
+
             }
         });
-//        view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//            }
-//        });
     }
+
+
 
 
     public void registerPhone() {

@@ -2,6 +2,7 @@ package com.rokid.rkglassdemokotlin.camera
 
 import android.app.AlertDialog
 import android.app.Application
+import android.app.Dialog
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.media.MediaPlayer
@@ -191,6 +192,7 @@ data class CameraModel(
      * On capture
      * capture pictures and store it in /sdcard/rkGlassText/ folder
      */
+    private lateinit var dialog: Dialog
     fun onCapture(v: View) {
         val savePath = File(v.context.filesDir, "${System.currentTimeMillis()}.jpg").absolutePath
 
@@ -218,7 +220,8 @@ data class CameraModel(
                                 dialogInterface.dismiss()
                             }
                             .setView(bingding.root)
-                        alterDialogBuilder.create().show()
+//                        alterDialogBuilder.create().show()
+                        dialog = alterDialogBuilder.show()
 
                     }
                 })
@@ -237,10 +240,13 @@ data class CameraModel(
             .enqueue(object : ResultCallback<Result<String>>() {
                 override fun onSuccess(response: Response<Result<String>?>) {
                     photo.postValue("注册成功")
+//                    RKLogger.e("注册成功")
+                    dialog.dismiss()
                 }
 
                 override fun onFail(message: String) {
                     photo.postValue(message)
+//                    RKLogger.e(message)
                 }
             })
     }

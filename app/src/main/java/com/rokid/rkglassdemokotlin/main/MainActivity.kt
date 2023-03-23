@@ -54,8 +54,9 @@ class MainActivity : BaseActivity() {
 //        val drawableToBmp = BitmapUtil.drawableToBmp(this, R.drawable.ym);
 //        getImageName(drawableToBmp, 1)
 
-//        var showResumeMsgDialog = ShowResumeMsgDialog.getInstance()
+//        var showResumeMsgDialog = ShowResumeMsgDialog.getInstance("string")
 //        showResumeMsgDialog.show(supportFragmentManager, "")
+
     }
 
 
@@ -65,16 +66,19 @@ class MainActivity : BaseActivity() {
 //        val SDK_KEY = "FnpHdxcZzaLPwc9NfRGaTvfmYCPc9azhWoWVc8EHEdCu"
 //        val ACTIVE_KEY = "85Q1-11GJ-213Z-N732"
         //release包
+//        val APP_ID = "7eQRFaiqEXoj5KysU5hT7Lidpdvzz9WxyKpfpa9mfyDH"
+//        val SDK_KEY = "FnpHdxcZzaLPwc9NfRGaTvfmYCPc9azhWoWVc8EHEdCu"
+//        val ACTIVE_KEY = "85Q1-11GJ-212H-4N4G"
         val APP_ID = "7eQRFaiqEXoj5KysU5hT7Lidpdvzz9WxyKpfpa9mfyDH"
         val SDK_KEY = "FnpHdxcZzaLPwc9NfRGaTvfmYCPc9azhWoWVc8EHEdCu"
-        val ACTIVE_KEY = "85Q1-11GJ-212H-4N4G"
+        val ACTIVE_KEY = "85Q1-11GJ-211K-VCD8"
         val code = FaceEngine.activeOnline(this, ACTIVE_KEY, APP_ID, SDK_KEY)
         if (code == ErrorInfo.MOK) {
             Toast.makeText(applicationContext, "初始化成功", Toast.LENGTH_SHORT).show()
-            Log.i("TAG", "activeOnline success");
+            Log.i("TAG", "activeOnline success")
         } else if (code == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
             Toast.makeText(applicationContext, "已经激活", Toast.LENGTH_SHORT).show()
-            Log.i("TAG", "already activated");
+            Log.i("TAG", "already activated")
         } else {
             Toast.makeText(applicationContext, "初始化失败" + code, Toast.LENGTH_SHORT).show()
             Log.i("TAG", "activeOnline failed, code is : " + code);

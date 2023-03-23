@@ -80,7 +80,7 @@ class CameraViewModel : BaseViewModel() {
      * @return [CameraModel]
      */
     fun getModel(): CameraModel {
-        model = CameraModel { it, toDo ->
+        model = CameraModel() { it, toDo ->
             when (it) {
                 CameraAction.StartPreview -> {//want to start preview
                     startPreView()
