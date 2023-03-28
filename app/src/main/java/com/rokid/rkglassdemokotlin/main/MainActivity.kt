@@ -23,6 +23,7 @@ import com.rokid.rkglassdemokotlin.base.BaseActivity
 import com.rokid.rkglassdemokotlin.base.DataBinding
 import com.rokid.rkglassdemokotlin.camera.ShowResumeMsgDialog
 import com.rokid.rkglassdemokotlin.databinding.ActivityMainBinding
+import com.rokid.rkglassdemokotlin.utils.T
 import com.rokid.utils.ContextUtil
 import java.io.ByteArrayOutputStream
 

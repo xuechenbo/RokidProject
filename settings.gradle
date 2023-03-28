@@ -5,6 +5,7 @@ pluginManagement {
         //Rokid maven is required.
         maven { url 'https://maven.rokid.com/repository/maven-public/'}
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 dependencyResolutionManagement {
@@ -14,6 +15,7 @@ dependencyResolutionManagement {
         //Rokid maven is required.
         maven { url 'https://maven.rokid.com/repository/maven-public/'}
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 rootProject.name = "RKGlassDemoKotlin"

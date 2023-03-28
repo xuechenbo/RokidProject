@@ -1,12 +1,10 @@
 package com.rokid.rkglassdemokotlin.camera
 
 import android.app.AlertDialog
-import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.media.MediaPlayer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.TextureView
@@ -16,6 +14,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.rokid.axr.phone.glasscamera.RKGlassCamera
 import com.rokid.logger.RKLogger
 import com.rokid.rkglassdemokotlin.R
@@ -27,9 +27,9 @@ import com.rokid.rkglassdemokotlin.databinding.VideoplayerBinding
 import com.rokid.rkglassdemokotlin.network.Result
 import com.rokid.rkglassdemokotlin.network.ResultCallback
 import com.rokid.rkglassdemokotlin.network.RetrofitNet
+import com.rokid.rkglassdemokotlin.utils.MethodInputUtil
 import com.rokid.uvc.usb.common.AbstractUVCCameraHandler
 import com.rokid.uvc.usb.encoder.RecordParams
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -193,15 +193,16 @@ data class CameraModel(
      * capture pictures and store it in /sdcard/rkGlassText/ folder
      */
     private lateinit var dialog: Dialog
+    private lateinit var showDialog: BasePopupView
     fun onCapture(v: View) {
         val savePath = File(v.context.filesDir, "${System.currentTimeMillis()}.jpg").absolutePath
 
         RKGlassCamera.getInstance()
             .takePicture(savePath) {
-                RKLogger.e("当前路径$it")
+//                RKLogger.e("当前路径$it")
                 action(CameraAction.Captured, object : BaseEvent() {
                     override fun doEvent(context: Context) {
-                        Toast.makeText(context, "saved to : $savePath", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "saved to : $savePath", Toast.LENGTH_SHORT).show()
                         val bingding =
                             ImgFullBinding.inflate(LayoutInflater.from(context), null, false)
                         bingding.lifecycleOwner = context as AppCompatActivity
@@ -209,7 +210,14 @@ data class CameraModel(
                         Glide.with(context).load(it).into(img)
                         bingding.register.setOnClickListener {
                             if (bingding.etContent.text.isNotEmpty()) {
+                                showDialog = XPopup.Builder(context)
+                                    .dismissOnBackPressed(false)
+                                    .dismissOnTouchOutside(false)
+                                    .asLoading("注册中...")
+                                    .show()
                                 upLoadImage(savePath, bingding.etContent.text.toString())
+                                //搜索按键action
+                                MethodInputUtil.hideSoftInput(context, bingding.etContent)
                             } else {
                                 Toast.makeText(context, "请输入名称", Toast.LENGTH_SHORT).show()
                             }
@@ -240,13 +248,18 @@ data class CameraModel(
             .enqueue(object : ResultCallback<Result<String>>() {
                 override fun onSuccess(response: Response<Result<String>?>) {
                     photo.postValue("注册成功")
-//                    RKLogger.e("注册成功")
-                    dialog.dismiss()
+                    if (showDialog != null && showDialog.isShow()) {
+                        showDialog.dismiss()
+                        dialog.dismiss()
+                    }
+
                 }
 
                 override fun onFail(message: String) {
+                    if (showDialog != null && showDialog.isShow()) {
+                        showDialog.dismiss()
+                    }
                     photo.postValue(message)
-//                    RKLogger.e(message)
                 }
             })
     }

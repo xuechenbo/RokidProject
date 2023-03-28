@@ -161,7 +161,6 @@ class CameraActivity : BaseActivity() {
                     mFacelList.clear()
                 }
             }
-
         }
     }
 

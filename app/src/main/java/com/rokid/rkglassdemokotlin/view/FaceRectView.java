@@ -138,7 +138,7 @@ public class FaceRectView extends View {
                     //右下角的横线
                     canvas.drawLine(rect.right, rect.bottom, rect.right - 20, rect.bottom, mPaint);
 //                    canvas.drawText(name, rect.left - 20, rect.top - 20, mPaintText);
-                    canvas.drawText(faceInfo.getName() + faceId, rect.left - 20, rect.top - 20, mPaintText);
+                    canvas.drawText(faceInfo.getName(), rect.left - 20, rect.top - 20, mPaintText);
                 }
             }
         }
