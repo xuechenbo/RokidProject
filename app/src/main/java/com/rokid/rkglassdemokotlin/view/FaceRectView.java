@@ -3,6 +3,7 @@ package com.rokid.rkglassdemokotlin.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
@@ -53,7 +54,7 @@ public class FaceRectView extends View {
         mPaintText.setAntiAlias(true);
         mPaintText.setStrokeWidth(6);
         mPaintText.setColor(context.getResources().getColor(R.color.blue_a700));
-        mPaintText.setTextSize(25);
+        mPaintText.setTextSize(60);
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -121,6 +122,17 @@ public class FaceRectView extends View {
                 if (faceInfoList.get(i).getRect() != null) {
                     FaceModel faceInfo = faceInfoList.get(i);
                     Rect rect = faceInfo.getRect();
+//                    if (rect != null) {
+//                        Path forePath = new Path();
+//                        forePath.moveTo(rect.left, rect.top);
+//                        forePath.lineTo(rect.right, rect.top);
+//                        forePath.lineTo(rect.right, rect.bottom);
+//                        forePath.lineTo(rect.left, rect.bottom);
+//                        forePath.lineTo(rect.left, rect.top);
+//                        mPaint.setStyle(Paint.Style.STROKE);
+//                        mPaint.setStrokeWidth(3);
+//                        canvas.drawPath(forePath, mPaint);
+//                    }
                     int faceId = faceInfo.getFaceId();
                     canvas.drawLine(rect.left, rect.top, rect.left, rect.top + 20, mPaint);
                     //左上角的横线
@@ -138,7 +150,7 @@ public class FaceRectView extends View {
                     //右下角的横线
                     canvas.drawLine(rect.right, rect.bottom, rect.right - 20, rect.bottom, mPaint);
 //                    canvas.drawText(name, rect.left - 20, rect.top - 20, mPaintText);
-                    canvas.drawText(faceInfo.getName(), rect.left - 20, rect.top - 20, mPaintText);
+                    canvas.drawText(faceInfo.getName(), rect.left, rect.top - 80, mPaintText);
                 }
             }
         }

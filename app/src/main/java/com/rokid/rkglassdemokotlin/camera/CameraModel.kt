@@ -216,7 +216,6 @@ data class CameraModel(
                                     .asLoading("注册中...")
                                     .show()
                                 upLoadImage(savePath, bingding.etContent.text.toString())
-                                //搜索按键action
                                 MethodInputUtil.hideSoftInput(context, bingding.etContent)
                             } else {
                                 Toast.makeText(context, "请输入名称", Toast.LENGTH_SHORT).show()
@@ -248,7 +247,7 @@ data class CameraModel(
             .enqueue(object : ResultCallback<Result<String>>() {
                 override fun onSuccess(response: Response<Result<String>?>) {
                     photo.postValue("注册成功")
-                    if (showDialog != null && showDialog.isShow()) {
+                    if (showDialog != null && showDialog.isShow) {
                         showDialog.dismiss()
                         dialog.dismiss()
                     }
@@ -256,7 +255,7 @@ data class CameraModel(
                 }
 
                 override fun onFail(message: String) {
-                    if (showDialog != null && showDialog.isShow()) {
+                    if (showDialog != null && showDialog.isShow) {
                         showDialog.dismiss()
                     }
                     photo.postValue(message)

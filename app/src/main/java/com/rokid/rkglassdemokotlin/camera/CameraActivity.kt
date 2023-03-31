@@ -177,7 +177,7 @@ class CameraActivity : BaseActivity() {
                 override fun onSuccess(response: Response<Result<FaceBean>?>) {
                     val body = response.body()
                     questNum++
-                    tv_tip?.text = "成功$questNum"
+                    tv_tip?.text = ""
                     if (mFacelList.size >= index) {
                         mFacelList[index]?.name = body?.data?.name
                     }
